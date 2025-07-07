@@ -1,24 +1,19 @@
-# app.py - FINAL, ROBUST VERSION
-
 import streamlit as st
 import os
 from groq import Groq
 from dotenv import load_dotenv
 
 # --- CONFIGURATION & API KEY (Robust Version) ---
-# Create an explicit path to the .env file in the same directory as the script
 dotenv_path = os.path.join(os.path.dirname(__file__), '.env')
 
 # Load the .env file from the specified path
 if os.path.exists(dotenv_path):
     load_dotenv(dotenv_path=dotenv_path)
-    st.success("Successfully loaded the .env file.")
 else:
-    st.error(".env file not found. Please ensure it is in the same directory as app.py.")
     st.stop()
 
 
-# Now, try to initialize the Groq client
+
 try:
     # Use os.getenv to read the key that was just loaded
     groq_api_key = os.getenv("GROQ_API_KEY")
@@ -26,28 +21,27 @@ try:
         raise ValueError("GROQ_API_KEY not found in the .env file.")
     
     client = Groq(api_key=groq_api_key)
-    st.success("Groq API client initialized successfully!")
 
 except Exception as e:
     st.error(f"Could not initialize the Groq API client: {e}")
     st.stop()
 
 
-# --- UI & SIDEBAR (No changes needed here) ---
+# --- UI & SIDEBAR 
 with st.sidebar:
     st.header("About EduBeyond")
     st.info(
         "EduBeyond is an AI-powered tutor designed to help you master the concepts of "
         "AP Physics C: Mechanics and Electricity & Magnetism."
     )
-    # ... (the rest of your sidebar code)
+
 
 st.title("AP Physics C AI Tutor")
 st.markdown("Welcome to your personal physics assistant, **EduBeyond**! How can I help you prepare today?")
 
 
 # --- SYSTEM PROMPT ---
-# Use the full "Few-Shot CoT" system prompt that we created before
+#"Few-Shot CoT" system prompt 
 system_prompt = """
 You are an expert AP Physics C tutor named EduBeyond. Your primary directive is to use Chain-of-Thought reasoning to guide students to their own conclusions.
 
