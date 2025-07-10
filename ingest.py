@@ -5,7 +5,6 @@ from langchain_community.vectorstores import FAISS
 from langchain_google_genai import GoogleGenerativeAIEmbeddings
 
 # --- Configuration ---
-# Make sure this points to your file
 SOURCE_FILE_PATH = "AP-Physics-C-Mech.pdf" 
 FAISS_INDEX_PATH = "faiss_index"
 
@@ -30,8 +29,6 @@ def main():
     chunks = text_splitter.split_documents(documents)
     print(f"Split document into {len(chunks)} chunks.")
 
-    # --- DEBUG STEP 2: CHECK CHUNKS ---
-    # If chunks were created, this will stop the script before the error.
     if not chunks:
         print("!!! Error: Failed to split document into chunks. Please check the document content and splitter settings.")
         return
@@ -46,13 +43,11 @@ def main():
         print(f"Vector store saved to '{FAISS_INDEX_PATH}'")
     except Exception as e:
         print(f"An error occurred during embedding or FAISS creation: {e}")
-        # This will print the full traceback for the error
         import traceback
         traceback.print_exc()
 
 
 if __name__ == "__main__":
-    # Make sure you have your GOOGLE_API_KEY set as an environment variable
     if not os.getenv("GOOGLE_API_KEY"):
         print("Error: GOOGLE_API_KEY environment variable not set.")
     else:
