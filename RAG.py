@@ -31,10 +31,31 @@ except Exception as e:
     st.stop()
 
 # --- UI SETUP---
-st.set_page_config(page_title="AP Physics C AI Tutor", page_icon="⚛️", layout="wide")
+st.set_page_config(
+    page_title="AP Physics C AI Tutor",
+    page_icon="⚛️",
+    layout="centered" 
+)
+
+
+with st.sidebar:
+    st.header("About EduBeyond")
+    st.info(
+        "EduBeyond is an AI-powered tutor designed to help you master the concepts of "
+        "AP Physics C: Mechanics and Electricity & Magnetism. Ask it conceptual questions, "
+        "calculation problems, or for help with derivations."
+    )
+    
+    st.header("Key Constants")
+    # Using an expander to keep the sidebar tidy
+    with st.expander("Show Physics Constants"):
+        st.latex("g = 9.8 \\, \\text{m/s}^2")
+        st.latex("k = 8.99 \\times 10^9 \\, \\text{N} \\cdot \\text{m}^2/\\text{C}^2")
+        st.latex("\\epsilon_0 = 8.85 \\times 10^{-12} \\, \\text{C}^2/(\\text{N} \\cdot \\text{m}^2)")
+        st.latex("\\mu_0 = 4\\pi \\times 10^{-7} \\, (\\text{T} \\cdot \\text{m})/\\text{A}")
 
 st.title("⚛️ AP Physics C AI Tutor")
-st.subheader("Your personal guide for mastering AP Physics C: Mechanics")
+st.markdown("Welcome to your personal physics assistant, **EduBeyond**! How can I help you prepare today?")
 st.markdown("---")
 
 # --- RAG-ENABLED CHAT LOGIC ---
@@ -50,24 +71,25 @@ if prompt := st.chat_input("Ask a question about Kinematics, Newton's Laws, etc.
     with st.chat_message("user"):
         st.markdown(prompt)
 
-    with st.spinner("Thinking..."):
+    with st.spinner("EduBeyond is thinking..."):
         # 1. RETRIEVE CONTEXT
         retrieved_docs = vector_store.similarity_search(prompt, k=3)
         context = "\n\n".join([doc.page_content for doc in retrieved_docs])
 
         # 2. AUGMENT THE PROMPT
         rag_prompt = f"""
-        You are an expert AP Physics C tutor named EduBeyond. Your primary directive is to use Chain-of-Thought reasoning to guide students to their own conclusions.
+        You are an expert AP Physics C tutor for high school students. Your name is EduBeyond.
+        Your tone is encouraging, clear, and professional. Your primary directive is to use Chain-of-Thought reasoning to guide students to their own conclusions.
 
         ### RULES ###
         1.  **Start with formal definition:** Start with formal definition of the topic the student asks you about and the area of usage of that topic.
         2.  **Guide, Don't Solve:** Each step in your thought process must end with a guiding question.
-        3.  **Forceful LaTeX Formatting:** Every step of your reasoning must use proper LaTeX for all mathematics and render it inside the chat.
-        4.  **Use Precise Terminology:** Your explanations must use terminology appropriate for the AP Physics C curriculum.
-        5.  **Maintain Conversational Pacing:** Generate only one step and one question at a time.
-        6.  **Acknowledge and Reinforce:** When a student is correct, use positive reinforcement.
-
-        use a Socratic, Chain-of-Thought method.
+        3.  **Step-by-Step Reasoning:** For any calculation, derivation, or complex problem, you MUST break down your reasoning into a logical, step-by-step process. Explain the "why" behind each step.
+        4.  **Forceful LaTeX Formatting:** Every step of your reasoning must use proper LaTeX for all mathematics and render it inside the chat.
+        5.  **Use AP Physics C Terminology:** Use terms like 'integral', 'derivative', 'moment of inertia', 'Gauss's Law', etc., where appropriate.
+        6.  **Check for Understanding:** After a complex explanation, ask a follow-up question.
+        7.  **Maintain Conversational Pacing:** Generate only one step and one question at a time.
+        8.  **Acknowledge and Reinforce:** When a student is correct, use positive reinforcement.
 
         CONTEXT:
         ---
